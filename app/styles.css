@@ -86,6 +86,11 @@ code {
   @apply overflow-x-auto rounded-xl bg-neutral-100 dark:bg-neutral-800 p-3 text-sm max-w-7xl max-h-3xl;
 }
 
+
+.comment-article a {
+  @apply text-blue-600 dark:text-blue-400 hover:underline underline-offset-2 transition-colors;
+}
+
 .comment-article code {
   @apply whitespace-pre;
   font-family: "DM Mono", monospace;
@@ -94,8 +99,4 @@ code {
 code:not(.shiki code):not(.shiki .line code) {
   font-family: "DM Mono", monospace;
   @apply px-1 py-0 rounded-lg bg-stone-200 dark:bg-neutral-800;
-}
-
-a {
-  @apply text-blue-600 dark:text-blue-400 hover:underline underline-offset-2 transition-colors;
 }

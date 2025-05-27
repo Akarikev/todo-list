@@ -100,8 +100,9 @@ function NotificationItem({ notification }: { notification: Notification }) {
 						className={clsx({
 							"i-solar-hand-shake-line-duotone text-secondary":
 								notification.type === "new_member",
+							"i-lucide-at-sign": notification.type === "mention",
 							"i-solar-user-hands-line-duotone text-secondary":
-								notification.type !== "new_member",
+								notification.type === "assignment",
 						})}
 					/>
 				</div>
@@ -118,11 +119,12 @@ function convert(notification: Notification) {
 		.replace(TASK_MENTION_REGEX, (_, taskId) => {
 			const task = tasks.find((it) => it?.id === Number(taskId));
 			const color = task ? "text-blue-500" : "text-secondary";
-			return `<span href="/tasks/${taskId}" class="${color} font-medium">#${taskId}: ${shorten(task?.title || "&lt;deleted task&gt;")}</span>`;
+			return `<span class="${color} font-medium">#${taskId}: ${shorten(task?.title || "&lt;deleted task&gt;")}</span>`;
 		})
 		.replace(USER_MENTION_REGEX, (_, userId) => {
-			const user = users.find((it) => it?.id === Number(userId))!;
-			return `<span class="text-orange-500 font-medium font-mono">@${user?.username || "&lt;deleted user&gt;"}</span>`;
+			const user = users.find((it) => it?.id === Number(userId));
+			const color = user ? "text-orange-500" : "text-secondary";
+			return `<span class="${color} font-medium font-mono">@${user?.username || "&lt;deleted user&gt;"}</span>`;
 		});
 }
 

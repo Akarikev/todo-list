@@ -24,7 +24,6 @@ export function useTasks({ assigneeId, search, status }: TaskProps = {}) {
 		getNextPageParam: (lastPage, pages) =>
 			lastPage.length === 0 ? undefined : pages.length,
 		initialPageParam: 0,
-		staleTime: 1000 * 60 * 5,
 	});
 
 	const create = useMutation({

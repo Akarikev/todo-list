@@ -20,10 +20,33 @@ export function CommentComposer({ taskId }: Props) {
 
 		if (!content.trim()) return;
 
-		create.mutate({ taskId, content: content.trim(), authorId: user.id });
-		form.reset();
-		inputRef.current?.focus();
+		create.mutate(
+			{ taskId, content: content.trim(), authorId: user.id },
+			{
+				onSuccess: () => {
+					form.reset();
+
+					if (inputRef.current) {
+						inputRef.current.style.height = "auto";
+					}
+					setTimeout(() => inputRef.current?.focus(), 100);
+				},
+			},
+		);
 	};
+
+	const handleResize = React.useRef(() => {
+		const textarea = inputRef.current;
+
+		if (textarea) {
+			textarea.style.height = "auto";
+			textarea.style.height = `${textarea.scrollHeight}px`;
+		}
+	});
+
+	React.useEffect(() => {
+		handleResize.current();
+	}, []);
 
 	return (
 		<form
@@ -42,11 +65,14 @@ export function CommentComposer({ taskId }: Props) {
 
 			<div className="flex w-full items-center">
 				<textarea
-					className="flex-1 bg-transparent border-none outline-none focus:outline-none focus:ring-0 p-0"
+					className="flex-1 bg-transparent border-none outline-none focus:outline-none focus:ring-0 p-0 overflow-y-auto overflow-x-hidden max-h-18rem"
 					placeholder="Add a comment"
 					name="content"
 					rows={3}
 					ref={inputRef}
+					disabled={create.isPending}
+					onChange={handleResize.current}
+					onInput={handleResize.current}
 				/>
 			</div>
 

@@ -1,3 +1,5 @@
+import { useIsFetching } from "@tanstack/react-query";
+import clsx from "clsx";
 import { useAtom } from "jotai";
 import React from "react";
 import { useLoaderData } from "react-router";
@@ -15,6 +17,8 @@ export function Header() {
 	const [assignee, setAssignee] = useAtom(assigneeAtom);
 	const [, setSearch] = useAtom(searchAtom);
 	const [input, setInput] = React.useState("");
+
+	const isFetching = useIsFetching({ queryKey: ["tasks"] });
 
 	React.useEffect(() => {
 		const timeout = setTimeout(() => {
@@ -57,6 +61,14 @@ export function Header() {
 							))}
 						</Select>
 					</div>
+				</div>
+
+				<div>
+					<div
+						className={clsx("i-svg-spinners-270-ring opacity-0 transition-opacity duration-300", {
+							"opacity-100": isFetching,
+						})}
+					/>
 				</div>
 			</div>
 

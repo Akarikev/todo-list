@@ -1,4 +1,5 @@
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
+import { type EditMentionOpts, updateMentions } from "~/lib/mentions.server";
 import { prisma } from "~/lib/prisma.server";
 import { render } from "~/lib/render.server";
 import { badRequest, methodNotAllowed, notFound } from "~/lib/responses";
@@ -33,6 +34,15 @@ export async function action({ request }: ActionFunctionArgs) {
 
 	const { id, content, authorId } = await request.json();
 
+	const originalComment = await prisma.comment.findUnique({
+		where: { id },
+		select: { content: true },
+	});
+
+	if (!originalComment) {
+		throw notFound();
+	}
+
 	const comment = await prisma.comment.update({
 		where: {
 			id,
@@ -51,6 +61,16 @@ export async function action({ request }: ActionFunctionArgs) {
 			},
 		},
 	});
+
+	const opts: EditMentionOpts = {
+		content: comment.content,
+		originalContent: originalComment.content,
+		taskId: comment.taskId,
+		authorId: comment.authorId,
+		authorUsername: comment.author.username,
+	};
+
+	await updateMentions(opts);
 
 	comment.content = await render(comment.content);
 

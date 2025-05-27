@@ -15,13 +15,27 @@ function EditCommentInput({
 }: EditInputProps) {
 	const inputRef = React.useRef<HTMLTextAreaElement>(null);
 
+	const handleResize = React.useCallback(() => {
+		const textarea = inputRef.current;
+
+		if (textarea) {
+			textarea.style.height = "auto";
+			textarea.style.height = `${textarea.scrollHeight}px`;
+		}
+	}, []);
+
 	React.useEffect(() => {
 		const timeout = setTimeout(() => {
 			inputRef.current?.focus();
+			handleResize();
 		}, 100);
 
 		return () => clearTimeout(timeout);
 	}, []);
+
+	React.useEffect(() => {
+		handleResize();
+	}, [value, handleResize]);
 
 	const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
 		if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
@@ -39,8 +53,7 @@ function EditCommentInput({
 				value={value}
 				onChange={(e) => onChange(e.target.value)}
 				onKeyDown={handleKeyDown}
-				rows={Math.min(5, Math.max(2, value.split("\n").length))}
-				className="px-2 py-1 border-b rounded-t-xl border-0 border-stone-300 dark:border-neutral-700 dark:bg-neutral-800 w-full bg-stone-200/40 focus:outline-none focus:ring-0"
+				className="px-2 py-1 border-b rounded-t-xl border-0 border-stone-300 dark:border-neutral-700 dark:bg-neutral-800 w-full bg-stone-200/40 focus:outline-none focus:ring-0 max-h-28rem"
 			/>
 
 			<button
